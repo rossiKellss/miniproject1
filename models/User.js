@@ -1,11 +1,19 @@
-const { model, Schema } = require("mongoose");
+const { model, Schema, default: mongoose } = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
-  username: "String",
-  email: "String",
-  age: "Number",
-  password: "String",
+  username: {
+    type: String,
+  },
+  email: { type: String },
+  age: { type: Number },
+  password: { type: String },
+  posts: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Posts",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {

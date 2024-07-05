@@ -3,7 +3,10 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const path = require("path");
 const connectToDB = require("./connection/connection");
+
 const User = require("./models/User");
+const Posts = require("./models/Posts");
+
 const bcrypt = require("bcrypt");
 const { signToken, verifyToken } = require("./jwt/jwt");
 
@@ -33,9 +36,10 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
   res.render("login");
 });
-app.get("/profile", isLoggedIn, (req, res) => {
-  console.log(req.user);
-  res.send("profile page");
+app.get("/profile", isLoggedIn, async (req, res) => {
+  const userData = await User.findById(req.user.id).populate("posts");
+
+  res.render("profile", { userData });
 });
 
 app.post("/register", async (req, res, next) => {
@@ -54,12 +58,12 @@ app.post("/register", async (req, res, next) => {
     res.status(404).send("Error generating token");
   }
 
-  res.cookie("token", token).redirect("/");
+  res.cookie("token", token).redirect("/profile");
 });
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("received pass is", password);
+
   const emailExists = await User.findOne({ email });
 
   if (!emailExists) {
@@ -71,13 +75,24 @@ app.post("/login", async (req, res) => {
     res.status(404).render("login");
   }
   const token = signToken(emailExists._id);
-  res.cookie("token", token).redirect("/");
+  res.cookie("token", token).redirect("/profile");
 });
 app.get("/logout", (req, res) => {
   res.cookie("token", "").redirect("/login");
 });
 
+app.post("/post", isLoggedIn, async (req, res) => {
+  let user = await User.findById(req.user.id);
+  const { content } = req.body;
+  const post = await Posts.create({
+    userId: req.user.id,
+    content,
+  });
+  user.posts.push(post._id);
+  await user.save();
 
+  res.redirect("/profile");
+});
 
 app.listen(3000, (req, res) => {
   console.log("server running");
