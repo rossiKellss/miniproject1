@@ -36,12 +36,6 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
   res.render("login");
 });
-app.get("/profile", isLoggedIn, async (req, res) => {
-  const userData = await User.findById(req.user.id).populate("posts");
-
-  res.render("profile", { userData });
-});
-
 app.post("/register", async (req, res, next) => {
   const { username, email, age, password } = req.body;
   const userExists = await User.findOne({ email });
@@ -79,6 +73,25 @@ app.post("/login", async (req, res) => {
 });
 app.get("/logout", (req, res) => {
   res.cookie("token", "").redirect("/login");
+});
+
+app.get("/profile", isLoggedIn, async (req, res) => {
+  const userData = await User.findById(req.user.id).populate("posts");
+  console.log(userData);
+
+  res.render("profile", { userData });
+});
+
+app.get("/like/:id", isLoggedIn, async (req, res) => {
+  const postData = await Posts.findById(req.params.id);
+  // if post exists or not
+  if (postData.likes.indexOf(req.user.id) == -1) {
+    postData.likes.push(req.user.id);
+  } else {
+    postData.likes.splice(postData.likes.indexOf(req.user.id), 1);
+  }
+  await postData.save();
+  res.redirect("/profile");
 });
 
 app.post("/post", isLoggedIn, async (req, res) => {

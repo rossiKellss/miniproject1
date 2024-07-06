@@ -44,7 +44,16 @@
             <p class=""><%=element.content%></p>
             <div class="flex justify-between">
               <div class="flex gap-2">
-                <span class="text-blue-400 underline">Like</span>
+                <a
+                  href="/like/<%=element._id%>"
+                  class="text-blue-400 hover:text-red-500"
+                  ><span class="underline"
+                    ><%=element.likes.indexOf(userData._id)===-1?"Like":"Unlike"%></span
+                  >
+                  <span class="decoration-0"
+                    >(<%=element.likes.length%>)</span
+                  ></a
+                >
                 <span class="text-gray-400">Edit</span>
               </div>
               <span class="text-right block text-blue-400"
