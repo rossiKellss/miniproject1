@@ -107,6 +107,23 @@ app.post("/post", isLoggedIn, async (req, res) => {
   res.redirect("/profile");
 });
 
+app.get("/edit/:id", async (req, res) => {
+  const { id } = req.params;
+  const data = await Posts.findById(id).populate("userId");
+
+  res.render("edit", { data });
+});
+
+app.post("/edit/:id", async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+  const result = await Posts.findByIdAndUpdate(id, { content });
+  if (!result) {
+    console.log("An error occured while updating");
+  }
+  res.redirect("/profile");
+});
+
 app.listen(3000, (req, res) => {
   console.log("server running");
 });
