@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Upload file</title>
+  </head>
+  <body>
+    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
+      <h1 class="text-3xl">
+        <span class="font-light">Upload a file </span>
+      </h1>
+      <h5 class="mb-5 text-sm">Edit a new post.</h5>
+      <form action="">
+        <input type="file" enctype="multipart/form-data" name="image" />
+        >
+        <div class="flex mt-2 gap-2 text-sm">
+          <button
+            type="submit"
+            class="block px-3 py-1 bg-yellow-500 text-black"
+          >
+            Update
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
