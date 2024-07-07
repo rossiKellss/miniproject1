@@ -11,16 +11,16 @@
       <h1 class="text-3xl">
         <span class="font-light">Upload a file </span>
       </h1>
-      <h5 class="mb-5 text-sm">Edit a new post.</h5>
-      <form action="">
-        <input type="file" enctype="multipart/form-data" name="image" />
-        >
+      <h5 class="mb-5 text-sm"></h5>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" />
+
         <div class="flex mt-2 gap-2 text-sm">
           <button
             type="submit"
             class="block px-3 py-1 bg-yellow-500 text-black"
           >
-            Update
+            Upload
           </button>
         </div>
       </form>
