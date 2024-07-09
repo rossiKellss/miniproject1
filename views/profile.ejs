@@ -8,10 +8,25 @@
   </head>
   <body>
     <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
-      <h1 class="text-3xl">
-        <span class="font-light">Hello </span><%=userData.username %>
-      </h1>
-      <h5 class="mb-5 text-sm">You can create a new post</h5>
+      <div class="flex gap-2 items-center">
+        <!-- for profile picture -->
+        <div class="cursor-pointer">
+          <img
+            src="./images/uploads/<%=userData.profileUrl %>"
+            alt=""
+            srcset=""
+            class="w-12 h-12 rounded-md object-fit"
+          />
+        </div>
+        <!-- for Username -->
+        <div>
+          <h1 class="text-3xl">
+            <span class="font-light">Hello </span><%=userData.username %>
+          </h1>
+        </div>
+      </div>
+
+      <h5 class="mb-5 mt-4 text-sm">You can create a new post</h5>
       <form action="/post" method="post">
         <textarea
           name="content"

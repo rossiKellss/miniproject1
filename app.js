@@ -9,8 +9,7 @@ const Posts = require("./models/Posts");
 
 const bcrypt = require("bcrypt");
 const { signToken, verifyToken } = require("./jwt/jwt");
-const multer = require("multer");
-const crypto = require("crypto");
+const upload = require("./multer/multer");
 
 connectToDB("mongodb://localhost:27017/miniproject");
 app.set("view engine", "ejs");
@@ -19,19 +18,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/images/uploads");
-  },
-  filename: function (req, file, cb) {
-    crypto.randomBytes(12, function (err, bytes) {
-      const fn = bytes.toString("hex") + path.extname(file.originalname);
-      cb(null, fn);
-    });
-  },
-});
-
-const upload = multer({ storage: storage });
 const isLoggedIn = (req, res, next) => {
   const cookie = req.cookies.token;
   if (!cookie) return res.send("you must be logged in");
@@ -92,7 +78,6 @@ app.get("/logout", (req, res) => {
 
 app.get("/profile", isLoggedIn, async (req, res) => {
   const userData = await User.findById(req.user.id).populate("posts");
-  console.log(userData);
 
   res.render("profile", { userData });
 });
@@ -140,11 +125,18 @@ app.post("/edit/:id", async (req, res) => {
 });
 
 app.get("/upload", (req, res) => {
-  res.render("fileUploadTest");
+  res.render("profileImgUpload");
 });
 
-app.post("/upload", upload.single("image"), (req, res) => {
-  console.log(req.file);
+app.post("/upload", isLoggedIn, upload.single("image"), async (req, res) => {
+  const { id } = req.user;
+  const uploaded = await User.findByIdAndUpdate(id, {
+    profileUrl: req.file.filename,
+  });
+  if (!uploaded) {
+    console.log("Cannot update profile");
+  }
+  res.redirect("/profile");
 });
 
 app.listen(3000, (req, res) => {

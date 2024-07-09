@@ -8,6 +8,10 @@ const userSchema = new Schema({
   email: { type: String },
   age: { type: Number },
   password: { type: String },
+  profileUrl:{
+    type:String,
+    default:"user.png"
+  },
   posts: [
     {
       type: mongoose.Schema.ObjectId,
